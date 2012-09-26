@@ -1,4 +1,5 @@
 <?php
+
 	/**
 	 * Port of the famous GNU/Linux Password Generator ("pwgen") to PHP.
 	 * This file may be distributed under the terms of the GNU Public License.
@@ -193,7 +194,7 @@
 					$str = self::$elements[$i]->str;
 					$len = strlen($str);
 					$flags = self::$elements[$i]->flags;
-	
+
 					// Filter on the basic type of the next element
 					if (($flags & $should_be) == 0)
 						continue;
@@ -207,13 +208,13 @@
 					// Don't allow us to overflow the buffer
 					if ($len > $this->pw_length-$c)
 						continue;
-	
+
 					// Handle the AMBIGUOUS flag
 					if ($this->pwgen_flags & self::PW_AMBIGUOUS) {
 						if (strpbrk($str, self::$pw_ambiguous) !== false)
 							continue;
 					}
-	
+
 					/*
 					 * OK, we found an element which matches our criteria,
 					 * let's do it!
@@ -228,13 +229,13 @@
 							$feature_flags &= ~self::PW_UPPERS;
 						}
 					}
-			
+
 					$c += $len;
-			
+
 					// Time to stop?
 					if ($c >= $this->pw_length)
 						break;
-			
+
 					// Handle PW_DIGITS
 					if ($this->pwgen_flags & self::PW_DIGITS) {
 						if (!$first && (self::my_rand(0, 9) < 3)) {
@@ -244,14 +245,14 @@
 								strpos(self::$pw_ambiguous, $ch) !== false);
 							$this->password[$c++] = $ch;
 							$feature_flags &= ~self::PW_DIGITS;
-					
+
 							$first = 1;
 							$prev = 0;
 							$should_be = self::my_rand(0, 1) ? self::VOWEL : self::CONSONANT;
 							continue;
 						}
 					}
-					
+
 					// Handle PW_SYMBOLS
 					if ($this->pwgen_flags & self::PW_SYMBOLS) {
 						if (!$first && (self::my_rand(0, 9) < 2)) {
@@ -264,7 +265,7 @@
 							$feature_flags &= ~self::PW_SYMBOLS;
 						}
 					}
-	
+
 					// OK, figure out what the next element should be
 					if ($should_be == self::CONSONANT) {
 						$should_be = self::VOWEL;
@@ -403,8 +404,8 @@
 
 	class PWElement {
 		public $str;
-		public $flags;	
-		
+		public $flags;
+
 		public function __construct($str, $flags) {
 			$this->str = $str;
 			$this->flags = $flags;
