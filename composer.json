@@ -19,6 +19,5 @@
     },
     "autoload": {
         "psr-0": { "PWGen": "" }
-    },
-    "target-dir": "PWGen"
+    }
 }
