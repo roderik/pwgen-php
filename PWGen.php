@@ -327,10 +327,25 @@
 
 		/**
 		 * Generate a random number n, where $min <= n < $max
-		 * Mersenne Twister is used as an algorithm
+		 * mcrypt's RNG is used if the mcrypt extension has been installed.
+		 * Mersenne Twister is used as a cryptographically insecure fallback algorithm.
 		 */
 		public static function my_rand($min=0, $max=0) {
-			return mt_rand($min, $max);
+			if ($min > $max) {
+				return false;
+			}
+			if (function_exists('mcrypt_create_iv')) {
+				$rnd = unpack('L',mcrypt_create_iv(4,MCRYPT_DEV_URANDOM));
+				// Because you can't unpack an unsigned long on a 32bit system (or rather, you can,
+				// but it won't be unsigned), we need to clear the sign bit. mt_getrandmax() seems to
+				// be 2147483647 (0x7FFFFFFF) on all platforms I've tested, so this doesn't change the
+				// supported range.
+				$rnd = $rnd[1] & 0x7FFFFFFF;
+				return $rnd % (1 + $max - $min) + $min;
+			} else {
+				// fall back on cryptographically insecure rng
+				return mt_rand($min, $max);
+			}
 		}
 
 		/**
