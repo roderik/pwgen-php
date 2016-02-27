@@ -409,6 +409,25 @@
 		}
 
 		/**
+		 * Disallow certain special chars
+		 * @param array $symbols
+		 */
+		public function blacklistSymbol(array $symbols )
+		{
+			foreach ($symbols as $symbol) {
+				if (!preg_match('/' . preg_quote($symbol) . '/', self::$pw_symbols)) {
+					return;
+				}
+			}
+			$symbolArray = str_split(self::$pw_symbols);
+			foreach ($symbols as $symbol) {
+				$index =array_search($symbol, $symbolArray);
+				unset($symbolArray[$index]);
+			}
+			self::$pw_symbols = implode('', $symbolArray);
+		}
+
+		/**
 		 * Returns the last generated password. If there is none, a new one will be generated.
 		 */
 		public function __toString() {
