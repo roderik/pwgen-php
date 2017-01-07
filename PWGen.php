@@ -327,15 +327,22 @@
 
 		/**
 		 * Generate a random number n, where $min <= n < $max
-		 * mcrypt's RNG is used if the mcrypt extension has been installed.
+         * OpenSSL (preferred) or mcrypt (deprecated in PHP 7.1.0)'s RNG is used if the
+         * openssl or mcrypt extension have been installed.
 		 * Mersenne Twister is used as a cryptographically insecure fallback algorithm.
 		 */
 		public static function my_rand($min=0, $max=0) {
 			if ($min > $max) {
 				return false;
 			}
-			if (function_exists('mcrypt_create_iv')) {
-				$rnd = unpack('L',mcrypt_create_iv(4,MCRYPT_DEV_URANDOM));
+
+			// mcrypt was deprecated in PHP 7.1.0, prefer OpenSSL
+			$use_openssl = function_exists('openssl_random_pseudo_bytes');
+			$use_mcrypt = function_exists('mcrypt_create_iv');
+			if ($use_openssl || $use_mcrypt) {
+				$rnd = unpack('L', $use_openssl
+					? openssl_random_pseudo_bytes(4)
+					: mcrypt_create_iv(4,MCRYPT_DEV_URANDOM));
 				// Because you can't unpack an unsigned long on a 32bit system (or rather, you can,
 				// but it won't be unsigned), we need to clear the sign bit. mt_getrandmax() seems to
 				// be 2147483647 (0x7FFFFFFF) on all platforms I've tested, so this doesn't change the
