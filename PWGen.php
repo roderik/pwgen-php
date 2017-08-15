@@ -327,31 +327,37 @@
 
 		/**
 		 * Generate a random number n, where $min <= n < $max
-         * OpenSSL (preferred) or mcrypt (deprecated in PHP 7.1.0)'s RNG is used if the
-         * openssl or mcrypt extension have been installed.
-		 * Mersenne Twister is used as a cryptographically insecure fallback algorithm.
+		 * The prefered order of RNGs is:
+		 *  - php7's random_int
+		 *  - OpenSSL's openssl_random_pseudo_bytes
+		 *  - mcrypt's mcrypt_create_iv (deprecated in PHP 7.1.0)
+		 *  - php's mt_rand (not actually cryptographically secure at all)
 		 */
 		public static function my_rand($min=0, $max=0) {
 			if ($min > $max) {
 				return false;
 			}
 
-			// mcrypt was deprecated in PHP 7.1.0, prefer OpenSSL
-			$use_openssl = function_exists('openssl_random_pseudo_bytes');
-			$use_mcrypt = function_exists('mcrypt_create_iv');
-			if ($use_openssl || $use_mcrypt) {
-				$rnd = unpack('L', $use_openssl
-					? openssl_random_pseudo_bytes(4)
-					: mcrypt_create_iv(4,MCRYPT_DEV_URANDOM));
-				// Because you can't unpack an unsigned long on a 32bit system (or rather, you can,
-				// but it won't be unsigned), we need to clear the sign bit. mt_getrandmax() seems to
-				// be 2147483647 (0x7FFFFFFF) on all platforms I've tested, so this doesn't change the
-				// supported range.
-				$rnd = $rnd[1] & 0x7FFFFFFF;
-				return $rnd % (1 + $max - $min) + $min;
+			if (function_exists('random_int')) {
+				return random_int($min, $max);
 			} else {
-				// fall back on cryptographically insecure rng
-				return mt_rand($min, $max);
+				// mcrypt was deprecated in PHP 7.1.0, prefer OpenSSL
+				$use_openssl = function_exists('openssl_random_pseudo_bytes');
+				$use_mcrypt = function_exists('mcrypt_create_iv');
+				if ($use_openssl || $use_mcrypt) {
+					$rnd = unpack('L', $use_openssl
+						? openssl_random_pseudo_bytes(4)
+						: mcrypt_create_iv(4,MCRYPT_DEV_URANDOM));
+					// Because you can't unpack an unsigned long on a 32bit system (or rather, you can,
+					// but it won't be unsigned), we need to clear the sign bit. mt_getrandmax() seems to
+					// be 2147483647 (0x7FFFFFFF) on all platforms I've tested, so this doesn't change the
+					// supported range.
+					$rnd = $rnd[1] & 0x7FFFFFFF;
+					return $rnd % (1 + $max - $min) + $min;
+				} else {
+					// fall back on cryptographically insecure rng
+					return mt_rand($min, $max);
+				}
 			}
 		}
 
