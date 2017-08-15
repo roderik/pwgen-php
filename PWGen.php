@@ -35,22 +35,22 @@
 		private static $pw_vowels;
 
 		/**
-		 * @param length	Length of the generated password. Default: 8
-		 * @param secure	Generate completely random, hard-to-memorize passwords. These should only
+		 * @param int $length	Length of the generated password. Default: 8
+		 * @param bool $secure	Generate completely random, hard-to-memorize passwords. These should only
 		 * 			be used for machine passwords, since otherwise it's almost guaranteed that
 		 * 			users will simply write the password on a piece of paper taped to the monitor...
-		 * @param numerals	Include at least one number in the password. This is the default.
-		 * @param capitalize	Include at least one capital letter in the password. This is the default.
-		 * @param ambiguous	Don't use characters that could be confused by the user when printed,
+		 * @param bool $numerals	Include at least one number in the password. This is the default.
+		 * @param bool $capitalize	Include at least one capital letter in the password. This is the default.
+		 * @param bool $ambiguous	Don't use characters that could be confused by the user when printed,
 		 * 			such as 'l' and '1', or '0' or 'O'. This reduces the number of possible
 		 *			passwords significantly, and as such reduces the quality of the passwords.
 		 *			It may be useful for users who have bad vision, but in general use of this
 		 *			option is not recommended.
-		 * @param no-vowels	Generate random passwords that do not contain vowels or numbers that might be
+		 * @param bool $no_vowels	Generate random passwords that do not contain vowels or numbers that might be
 		 * 			mistaken for vowels. It provides less secure passwords to allow system
 		 * 			administrators to not have to worry with random passwords accidentally contain
 		 * 			offensive substrings.
-		 * @param symbols	Include at least one special character in the password.
+		 * @param bool $symbols	Include at least one special character in the password.
 		 */
 		public function __construct($length=8, $secure=false, $numerals=true, $capitalize=true,
 			$ambiguous=false, $no_vovels=false, $symbols=false) {
