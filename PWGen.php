@@ -458,4 +458,3 @@
 			$this->flags = $flags;
 		}
 	}
-?>
