@@ -224,7 +224,10 @@
 
 					// Handle PW_UPPERS
 					if ($this->pwgen_flags & self::PW_UPPERS) {
-						if (($first || $flags & self::CONSONANT) && (self::my_rand(0, 9) < 2)) {
+						if (($first || $flags & self::CONSONANT) &&
+							(self::my_rand(0, 9) < 2) &&
+							($this->pwgen_flags & self::PW_AMBIGUOUS) &&
+							strpos(self::$pw_ambiguous, strtoupper($this->password[$c])) === false) {
 							$this->password[$c] = strtoupper($this->password[$c]);
 							$feature_flags &= ~self::PW_UPPERS;
 						}
