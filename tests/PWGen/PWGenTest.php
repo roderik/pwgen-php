@@ -85,13 +85,31 @@ class PWGenTest extends TestCase
 
         $this->assertEquals(20, $pwgen->getLength());
         $this->assertTrue($pwgen->hasNumerals());
+        $this->assertTrue($pwgen->hasCapitalize());
 
         $pass = $pwgen->generate();
 
         $this->assertTrue(is_string($pass));
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
-        $this->assertRegExp('/[^A-Z]/', $pass); // Alpha NOT upper
+        $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
+        $this->assertRegExp('/\\d/', $pass); // Numerals
+    }
+
+    public function testGenerateNumeralsNoUppers()
+    {
+        $pwgen = new PWGen(20, false, true, false);
+
+        $this->assertEquals(20, $pwgen->getLength());
+        $this->assertTrue($pwgen->hasNumerals());
+        $this->assertFalse($pwgen->hasCapitalize());
+
+        $pass = $pwgen->generate();
+
+        $this->assertTrue(is_string($pass));
+        $this->assertEquals(20, strlen($pass));
+        $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
+        $this->assertNotRegExp('/[A-Z]/', $pass); // Alpha NOT upper
         $this->assertRegExp('/\\d/', $pass); // Numerals
     }
 
@@ -108,7 +126,7 @@ class PWGenTest extends TestCase
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
-        $this->assertRegExp('/[^\\d]/', $pass); // NO numerals!
+        $this->assertNotRegExp('/[\\d]/', $pass); // NO numerals!
     }
 
     public function testGenerateAmbiguous()
@@ -123,8 +141,8 @@ class PWGenTest extends TestCase
         $this->assertTrue(is_string($pass));
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
-        $this->assertRegExp('/[^A-Z]/', $pass); // Alpha NOT upper
-        $this->assertRegExp('/[^\\d]/', $pass); // NO numerals!
+        $this->assertNotRegExp('/[A-Z]/', $pass); // Alpha NOT upper
+        $this->assertNotRegExp('/[\\d]/', $pass); // NO numerals!
         $this->assertRegExp('/[' . preg_quote($pwgen->getAmbiguous(), '/') . ']/', $pass); // Symbols
     }
 
@@ -157,8 +175,8 @@ class PWGenTest extends TestCase
         $this->assertTrue(is_string($pass));
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
-        $this->assertRegExp('/[^A-Z]/', $pass); // Alpha NOT upper
-        $this->assertRegExp('/[^\\d]/', $pass); // NO numerals!
+        $this->assertNotRegExp('/[A-Z]/', $pass); // Alpha NOT upper
+        $this->assertNotRegExp('/[\\d]/', $pass); // NO numerals!
         $this->assertRegExp('/[' . preg_quote($pwgen->getSymbols(), '/') . ']/', $pass); // Symbols
     }
 
