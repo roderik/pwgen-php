@@ -152,6 +152,8 @@ class PWGenTest extends TestCase
 
         $this->assertEquals(20, $pwgen->getLength());
         $this->assertTrue($pwgen->hasNoVovels());
+        $this->assertTrue($pwgen->hasNumerals());
+        $this->assertTrue($pwgen->hasCapitalize());
 
         $pass = $pwgen->generate();
 
@@ -159,7 +161,7 @@ class PWGenTest extends TestCase
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
-        $this->assertRegExp('/[^\\d]/', $pass); // NO numerals!
+        $this->assertRegExp('/[\\d]/', $pass); // numerals
         $this->assertRegExp('/[^' . preg_quote($pwgen->getVovels(), '/') . ']/', $pass); // Symbols
     }
 
