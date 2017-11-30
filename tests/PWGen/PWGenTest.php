@@ -113,7 +113,7 @@ class PWGenTest extends TestCase
 
     public function testGenerateAmbiguous()
     {
-        $pwgen = new PWGen(20, false, false, false, true);
+        $pwgen = new PWGen(20, false, false, true, true);
 
         $this->assertEquals(20, $pwgen->getLength());
         $this->assertTrue($pwgen->hasAmbiguous());
