@@ -144,7 +144,6 @@ class PWGenTest extends TestCase
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha NOT upper
         $this->assertNotRegExp('/[\\d]/', $pass); // NO numerals!
-        $this->assertRegExp('/[' . preg_quote($pwgen->getAmbiguous(), '/') . ']/', $pass); // Symbols
     }
 
     public function testGenerateNoVovels()
