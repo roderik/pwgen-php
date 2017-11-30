@@ -162,7 +162,7 @@ class PWGenTest extends TestCase
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
         $this->assertRegExp('/[\\d]/', $pass); // numerals
-        $this->assertRegExp('/[^' . preg_quote($pwgen->getVovels(), '/') . ']/', $pass); // Symbols
+        $this->assertNotRegExp('/[' . preg_quote($pwgen->getVovels(), '/') . ']/', $pass); // No Vovels
     }
 
     public function testGenerateSymbols()
