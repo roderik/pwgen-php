@@ -135,13 +135,14 @@ class PWGenTest extends TestCase
 
         $this->assertEquals(20, $pwgen->getLength());
         $this->assertTrue($pwgen->hasAmbiguous());
+        $this->assertTrue($pwgen->hasCapitalize());
 
         $pass = $pwgen->generate();
 
         $this->assertTrue(is_string($pass));
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
-        $this->assertNotRegExp('/[A-Z]/', $pass); // Alpha NOT upper
+        $this->assertRegExp('/[A-Z]/', $pass); // Alpha NOT upper
         $this->assertNotRegExp('/[\\d]/', $pass); // NO numerals!
         $this->assertRegExp('/[' . preg_quote($pwgen->getAmbiguous(), '/') . ']/', $pass); // Symbols
     }
