@@ -17,6 +17,7 @@ class PWGenTest extends TestCase
     {
         $pwgen = new PWGen();
         $pwgen->setAmbiguous(true);
+
         $this->assertTrue($pwgen->hasAmbiguous());
     }
 
@@ -24,21 +25,37 @@ class PWGenTest extends TestCase
     {
         $pwgen = new PWGen();
         $pwgen->setCapitalize(true);
+
         $this->assertTrue($pwgen->hasCapitalize());
     }
 
-    // TODO: add more tests for set length (<5, <2 and <1)
-    public function testSetLength()
+    public function setLengthProvider()
+    {
+        return array(
+            array(-1, 8),
+            array(4, 4),
+            array(2, 2),
+            array(1, 1),
+            array(20, 20),
+        );
+    }
+
+    /**
+     * @dataProvider setLengthProvider
+     */
+    public function testSetLength($pwdLength, $expectedLength)
     {
         $pwgen = new PWGen();
-        $pwgen->setLength(20);
-        $this->assertEquals(20, $pwgen->getLength());
+        $pwgen->setLength($pwdLength);
+
+        $this->assertEquals($expectedLength, $pwgen->getLength());
     }
 
     public function testSetNoVovels()
     {
         $pwgen = new PWGen();
         $pwgen->setNoVovels(true);
+
         $this->assertTrue($pwgen->hasNoVovels());
     }
 
@@ -46,6 +63,7 @@ class PWGenTest extends TestCase
     {
         $pwgen = new PWGen();
         $pwgen->setNumerals(true);
+
         $this->assertTrue($pwgen->hasNumerals());
     }
 
@@ -53,6 +71,7 @@ class PWGenTest extends TestCase
     {
         $pwgen = new PWGen();
         $pwgen->setSecure(true);
+
         $this->assertTrue($pwgen->isSecure());
     }
 
@@ -60,6 +79,7 @@ class PWGenTest extends TestCase
     {
         $pwgen = new PWGen();
         $pwgen->setSymbols(true);
+
         $this->assertTrue($pwgen->hasSymbols());
     }
 
@@ -72,7 +92,7 @@ class PWGenTest extends TestCase
 
         $pass = $pwgen->generate();
 
-        $this->assertTrue(is_string($pass));
+        $this->assertInternalType('string', $pass);
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
@@ -89,7 +109,7 @@ class PWGenTest extends TestCase
 
         $pass = $pwgen->generate();
 
-        $this->assertTrue(is_string($pass));
+        $this->assertInternalType('string', $pass);
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
@@ -106,7 +126,7 @@ class PWGenTest extends TestCase
 
         $pass = $pwgen->generate();
 
-        $this->assertTrue(is_string($pass));
+        $this->assertInternalType('string', $pass);
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertNotRegExp('/[A-Z]/', $pass); // Alpha NOT upper
@@ -122,7 +142,7 @@ class PWGenTest extends TestCase
 
         $pass = $pwgen->generate();
 
-        $this->assertTrue(is_string($pass));
+        $this->assertInternalType('string', $pass);
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
@@ -139,7 +159,7 @@ class PWGenTest extends TestCase
 
         $pass = $pwgen->generate();
 
-        $this->assertTrue(is_string($pass));
+        $this->assertInternalType('string', $pass);
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha NOT upper
@@ -157,7 +177,7 @@ class PWGenTest extends TestCase
 
         $pass = $pwgen->generate();
 
-        $this->assertTrue(is_string($pass));
+        $this->assertInternalType('string', $pass);
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertRegExp('/[A-Z]/', $pass); // Alpha upper
@@ -174,7 +194,7 @@ class PWGenTest extends TestCase
 
         $pass = $pwgen->generate();
 
-        $this->assertTrue(is_string($pass));
+        $this->assertInternalType('string', $pass);
         $this->assertEquals(20, strlen($pass));
         $this->assertRegExp('/[a-z]/', $pass); // Alpha lower
         $this->assertNotRegExp('/[A-Z]/', $pass); // Alpha NOT upper
@@ -182,5 +202,33 @@ class PWGenTest extends TestCase
         $this->assertRegExp('/[' . preg_quote($pwgen->getSymbols(), '/') . ']/', $pass); // Symbols
     }
 
-    // TODO: ALL possible combinations should be tested!!!
+    public function testBlacklistSymbol()
+    {
+        $pwgen = new PWGen();
+        $pwgen->blacklistSymbol(array('@', '#', '$'));
+
+        $this->assertSame("!\"%&'()*+,-./:;<=>?[\]^_`{|}~", $pwgen->getSymbols());
+    }
+
+    public function testGetAmbiguous()
+    {
+        $pwgen = new PWGen();
+        $pwgen->setAmbiguous(true);
+
+        $this->assertSame('B8G6I1l0OQDS5Z2', $pwgen->getAmbiguous());
+    }
+
+    public function testMyRandOnInvalidRange()
+    {
+        $pwgen = new PWGen();
+
+        $this->assertFalse($pwgen->my_rand(100, 0));
+    }
+
+    public function testToString()
+    {
+        $pwgen = new PWGen();
+
+        $this->assertInternalType('string', (string) $pwgen);
+    }
 }
