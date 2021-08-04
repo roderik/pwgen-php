@@ -533,6 +533,8 @@ class PWGen
             unset($symbolArray[$index]);
         }
         self::$pw_symbols = implode('', $symbolArray);
+
+        return $this;
     }
 
     /**
